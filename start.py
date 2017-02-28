@@ -4,7 +4,7 @@ import time
 
 filePath = "rank.txt"
 maxRankUser = 5
-numberProblem = 15
+numberProblem = 10
 
 def numberToOperator(number):
     if number == 0:
@@ -16,6 +16,7 @@ def numberToOperator(number):
     elif number == 3:
         return "/"
     return ""
+
 
 def getAnswer(number1,operator,number2): 
     if operator == 0:
@@ -56,19 +57,25 @@ def printProblem(problem):
     print str(problem[0]) + numberToOperator(problem[1]) +  str(problem[2]) + "=?"
 
 def startGame():
-    start_time = time.time()
-    for i in range(0, numberProblem):
+    start_time = time.time()  
+    panaltytime = 0
+    counter = 0
+    for i in range(0, numberProblem): 
         #print ("" + str(i) + " " + str(random.randrange(0,10)))
         problem = generateProblem()
         printProblem(problem)
         
         userAnswer = raw_input("? ")
         if int(userAnswer) == problem[3]:
+            counter += 1 #counter+1
             print "Correct"           
         else:
+            panaltyime += 10.0
             print "Wrong"
+
+
     end_time = time.time()
-    playTime = round(end_time - start_time,2)
+    playTime = round(end_time - start_time,2) + panaltyTime
     print playTime
 
     return playTime
@@ -91,8 +98,11 @@ def readRecodes():
 
     return records
 
-def findRecodePosition(records,playTime):
-    newRanking = 5 # 0 1 2 3 4 [5]
+def findRecodePosition(records,playTime,counter):
+    if conter != numberProblem:
+        return maxRankUser
+
+    newRanking = maxRankUser # 0 1 2 3 4 [5]    
     for i in range(0,maxRankUser): #iterator 
         if playTime < float(records[i][1]): # i  0 1 2 3 4
             #print str(playTime) + " am faster then " + str(i) + ", " + records[i][1]
@@ -118,11 +128,14 @@ def saveRecords(records):
         saveRank(records[i][0],records[i][1])
 
 
-def doGame():
-    playTime = startGame()
 
+
+
+def playGame():
+    playTime, counter = startGame()
+    
     records = readRecodes()
-    newRanking = findRecodePosition(records, playTime)
+    newRanking = findRecodePosition(records, playTime, counter)
     if newRanking < 5:
         names = raw_input("Name: ")
         print names
